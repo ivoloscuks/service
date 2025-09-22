@@ -1,8 +1,33 @@
-<!DOCTYPE html><html lang='ru'><head><title>Контакты — AUTO SERVICE</title><link rel='icon' href='assets/logo.png'/><link rel='stylesheet' href='assets/style.css' /><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/><meta name="theme-color" content="#0b0f14"/></head><body><header class="header"><div class="wrap nav">
-      <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo.png" alt="AUTO SERVICE"/><span>AUTO&nbsp;SERVICE</span></a>
-      <input id="nav-toggle" type="checkbox"/><label for="nav-toggle" class="burger"><span></span></label>
-      <nav class="menu"><a href="services.html">УСЛУГИ</a><a href="prices.html">ЦЕНЫ</a><a href="contacts.html">КОНТАКТЫ</a><a href="contacts.html#booking" class="cta">ЗАПИСАТЬСЯ</a></nav>
-    </div></header>
+<!DOCTYPE html>
+<html lang='ru'>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#0b0f14"/>
+  <title>Контакты — AUTO SERVICE</title>
+  <link rel='icon' href='assets/logo.png'/>
+  <link rel='stylesheet' href='assets/style.css' />
+  <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+</head>
+<body>
+
+<header class="header">
+  <div class="wrap nav">
+    <a class="brand" href="index.html">
+      <img class="brand-logo" src="assets/logo.png" alt="AUTO SERVICE"/>
+      <span>AUTO&nbsp;SERVICE</span>
+    </a>
+    <input id="nav-toggle" type="checkbox"/>
+    <label for="nav-toggle" class="burger"><span></span></label>
+    <nav class="menu">
+      <a href="services.html">УСЛУГИ</a>
+      <a href="prices.html">ЦЕНЫ</a>
+      <a href="contacts.html">КОНТАКТЫ</a>
+      <a href="contacts.html#booking" class="cta">ЗАПИСАТЬСЯ</a>
+    </nav>
+  </div>
+</header>
+
 <h1 class="section-title" style="text-align:left">Контакты</h1>
 <div class="two">
   <div class="card">
@@ -12,33 +37,102 @@
     <p><strong>Адрес:</strong> г. Гродно, ул. Карского, д. 2А </p>
     <div class="section-title" id="booking" style="text-align:left;margin-top:6px">Запись онлайн</div>
     <form class="form" id="form-contacts">
-      <div class="row"><input name="name" placeholder="Имя" required/><input name="phone" placeholder="Телефон" required/></div>
-      <div class="row"><select name="service" required>
-        <option value="" disabled selected>Выберите услугу</option>
-        <option>Замена масла</option><option>Тормозная система</option><option>Подвеска</option>
-        <option>Шиномонтаж</option><option>Кондиционер</option><option>Диагностика</option>
-      </select><input type="date" name="date"/></div>
+      <div class="row">
+        <input name="name" placeholder="Имя" required/>
+        <input name="phone" placeholder="Телефон" required/>
+      </div>
+      <div class="row">
+        <select name="service" required>
+          <option value="" disabled selected>Выберите услугу</option>
+          <option>Замена масла</option>
+          <option>Тормозная система</option>
+          <option>Подвеска</option>
+          <option>Шиномонтаж</option>
+          <option>Кондиционер</option>
+          <option>Диагностика</option>
+        </select>
+        <input type="date" name="date"/>
+      </div>
       <textarea name="msg" placeholder="Комментарий"></textarea>
       <button class="btn primary" type="submit">Отправить</button>
     </form>
   </div>
-<div class="card" style="position: relative; border-radius:16px; overflow:hidden; cursor:pointer; width:100%; max-width:600px; margin:auto;">
-  <iframe 
-    src="https://yandex.ru/map-widget/v1/?um=constructor%3A76781aac21958774a4052cf57b864780b46de42c77063e8a8495515ef6142326&source=constructor"
-    width="100%" 
-    height="400" 
-    style="border:0;" 
-    allowfullscreen>
-  </iframe>
+
+  <!-- Карта с маркером-логотипом -->
+  <div class="card map-card" id="map" style="position: relative; border-radius:16px; overflow:hidden; cursor:pointer; width:100%; max-width:600px; margin:auto; height:400px; box-shadow:0 8px 20px rgba(0,0,0,0.2); transition: transform 0.3s ease, box-shadow 0.3s ease;"></div>
+
+  <script>
+    ymaps.ready(init);
+    function init() {
+      const coords = [53.688368, 23.882796];
+
+      const map = new ymaps.Map("map", {
+        center: coords,
+        zoom: 17,
+        controls: ['zoomControl', 'fullscreenControl']
+      });
+
+      const placemark = new ymaps.Placemark(coords, {
+        hintContent: "Гродно, ул. Карского, 2А",
+        balloonContent: "Кликните, чтобы построить маршрут"
+      }, {
+        iconLayout: 'default#image',
+        iconImageHref: 'assets/logo.png', // путь к логотипу
+        iconImageSize: [50, 50], // размер иконки
+        iconImageOffset: [-25, -50] // смещение, чтобы маркер указывал точно на дом
+      });
+
+      placemark.events.add('click', function () {
+        const yandexUrl = 'https://yandex.by/maps/?rtext=&rtt=auto&ruri=ymapsbm1%3A%2F%2Fgeo%3Fll=23.882796%2C53.688368&z=17';
+        const googleUrl = 'https://www.google.com/maps/dir/?api=1&destination=53.688368,23.882796';
+        const lang = navigator.language || navigator.userLanguage;
+        if(lang.includes('ru') || lang.includes('by')) {
+          window.open(yandexUrl, '_blank');
+        } else {
+          window.open(googleUrl, '_blank');
+        }
+      });
+
+      map.geoObjects.add(placemark);
+    }
+  </script>
+
+  <style>
+    .map-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+    }
+  </style>
 </div>
 
+<footer class="footer">
+  <div class="wrap footer-grid">
+    <div>
+      <img src="assets/logo.png" class="brand-logo small" alt=""/>
+      <div class="brand-name" style="font-weight:900">AUTO SERVICE</div>
+      <div class="muted">Профессиональный автосервис.</div>
+      <div class="muted">© <span id="year"></span></div>
+    </div>
+    <div>
+      <div class="footer-title">Навигация</div>
+      <a href="services.html">Услуги</a>
+      <a href="prices.html">Цены</a>
+      <a href="about.html">О нас</a>
+    </div>
+    <div>
+      <div class="footer-title">Контакты</div>
+      <div>Тел.: <a id="footerPhone" href="#">+375336730947</a></div>
+      <div>WhatsApp: <a id="footerWA" href="#">Написать</a></div>
+      <div>Email: <a href="mailto:Oskal32@mail.ru">Oskal32@mail.ru</a></div>
+      <div>Адрес: г. Гродно, ул. Карского, д. 2А</div>
+    </div>
+    <div>
+      <div class="footer-title">Запись</div>
+      <a class="btn primary" href="contacts.html#booking">Записаться</a>
+    </div>
+  </div>
+  <script src="assets/main.js"></script>
+</footer>
 
-
-
-
-<footer class="footer"><div class="wrap footer-grid">
-      <div><img src="assets/logo.png" class="brand-logo small" alt=""/><div class="brand-name" style="font-weight:900">AUTO SERVICE</div><div class="muted">Профессиональный автосервис.</div><div class="muted">© <span id="year"></span></div></div>
-      <div><div class="footer-title">Навигация</div><a href="services.html">Услуги</a><a href="prices.html">Цены</a><a href="about.html">О нас</a></div>
-      <div><div class="footer-title">Контакты</div><div>Тел.: <a id="footerPhone" href="#">+375336730947</a></div><div>WhatsApp: <a id="footerWA" href="#">Написать</a></div><div>Email: <a href="mailto:Oskal32@mail.ru">Oskal32@mail.ru</a></div><div>Адрес: г. Гродно, ул. Карского, д. 2А ()</div></div>
-      <div><div class="footer-title">Запись</div><a class="btn primary" href="contacts.html#booking">Записаться</a></div>
-    </div><script src="assets/main.js"></script></footer></body></html>
+</body>
+</html>
